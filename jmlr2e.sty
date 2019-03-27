@@ -16,6 +16,7 @@
 % Original Author:  Jeff Schlimmer
 % Edited by: Kevin Thompson, Martha Del Alto, Helen Stewart, Steve Minton \& Pandu Nayak.
 % Last edited: Mon  May  3 20:40:00 1993 by kthompso (Kevin Thompson) on muir
+% Edited by Finale Doshi-Velez to make into the MLHC template 
 
 \typeout{Document Style `jmlr' -- January 2016.}
 
@@ -165,16 +166,7 @@
 \renewenvironment{abstract}
 {\centerline{\large\bf Abstract}\vspace{0.7ex}%
   \bgroup\leftskip 20pt\rightskip 20pt\small\noindent\ignorespaces}%
-{\par\egroup\vskip 0.25ex}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                               KEYWORDS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% use \begin{keywords} .. \end{keywords} for keywordss.
-\newenvironment{keywords}
-{\bgroup\leftskip 20pt\rightskip 20pt \small\noindent{\bf Keywords:} }%
-{\par\egroup\vskip 0.25ex}
+{\par\egroup\vskip 0.1ex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                        FIRST PAGE, TITLE, AUTHOR
@@ -198,10 +190,10 @@
 \newlength\interauthorskip  \newlength\aftermaketitskip
 
 %% Changeable parameters.
-\setlength\aftertitskip{0.1in plus 0.2in minus 0.2in}
+\setlength\aftertitskip{0.05in plus 0.2in minus 0.2in}
 \setlength\beforetitskip{0.05in plus 0.08in minus 0.08in}
 \setlength\interauthorskip{0.08in plus 0.1in minus 0.1in}
-\setlength\aftermaketitskip{0.3in plus 0.1in minus 0.1in}
+\setlength\aftermaketitskip{0.1in plus 0.1in minus 0.1in}
 
 %% overall definition of maketitle, @maketitle does the real work
 \def\maketitle{\par
@@ -216,8 +208,6 @@
 
 \def\@startauthor{\noindent \normalsize\bf}
 \def\@endauthor{}
-\def\@starteditor{\noindent \small {\bf Editor:~}}
-\def\@endeditor{\normalsize}
 \def\@maketitle{\vbox{\hsize\textwidth
  \linewidth\hsize \vskip \beforetitskip
  {\begin{center} \Large\bf \@title \par \end{center}} \vskip \aftertitskip
@@ -228,12 +218,7 @@
   \def\AND{\@endauthor\rm\hss \vskip \interauthorskip \@startauthor}
   \@startauthor \@author \@endauthor}
 
-  \vskip \aftermaketitskip
-  \noindent \@starteditor \@editor \@endeditor
-  \vskip \aftermaketitskip
 }}
-
-\def\editor#1{\gdef\@editor{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -247,12 +232,6 @@
 %%        \jmlrheading{vol}{year}{pages}{Submitted}{published}{authors}
 
 \def\firstpageno#1{\setcounter{page}{#1}}
-
-\def\jmlrheading#1#2#3#4#5#6{\def\ps@jmlrtps{\let\@mkboth\@gobbletwo%
-\def\@oddhead{\scriptsize Journal of Machine Learning Research #1 (#2) #3 \hfill Submitted #4; Published #5}%
-\def\@oddfoot{\scriptsize \copyright #2 #6. \hfill}%
-\def\@evenhead{}\def\@evenfoot{}}%
-\thispagestyle{jmlrtps}}
 
 %% Defines the pagestyle for the rest of the pages
 %% Usage: \ShortHeadings{Minimizing Conflicts}{Minton et al}
@@ -309,20 +288,20 @@
 \def\belowstrut#1{\rule[-#1]{0in}{#1}\ignorespaces}
 
 % Acknowledgments
-\long\def\acks#1{\vskip 0.3in\noindent{\large\bf Acknowledgments}\vskip 0.2in
+\long\def\acks#1{\vskip 0.1in\noindent{\large\bf Acknowledgments}\vskip 0.1in
 \noindent #1}
 
 % Research Note
-\long\def\researchnote#1{\noindent {\LARGE\it Research Note} #1}
-
-\renewcommand{\appendix}{\par
-  \setcounter{section}{0}
-  \setcounter{subsection}{0}
-  \def\thesection{\Alph{section}}
-\def\section{\@ifnextchar*{\@startsiction{section}{1}{\z@}{-0.24in}{0.10in}%
-             {\large\bf\raggedright}}%
-{\@startsiction{section}{1}{\z@}{-0.24in}{0.10in}
-             {\large\bf\raggedright Appendix\ }}}}
+% \long\def\researchnote#1{\noindent {\LARGE\it Research Note} #1}
+% 
+% \renewcommand{\appendix}{\par
+%   \setcounter{section}{0}
+%   \setcounter{subsection}{0}
+%   \def\thesection{\Alph{section}}
+% \def\section{\@ifnextchar*{\@startsiction{section}{1}{\z@}{-0.24in}{0.10in}%
+%              {\large\bf\raggedright}}%
+% {\@startsiction{section}{1}{\z@}{-0.24in}{0.10in}
+%              {\large\bf\raggedright Appendix\ }}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               PROOF, THEOREM, and FRIENDS
@@ -339,5 +318,6 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{axiom}[theorem]{Axiom}
+
 
 

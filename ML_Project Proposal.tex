@@ -9,7 +9,13 @@
 % is archived at http://www.jmlr.org/format/natbib.pdf
 
 \usepackage{jmlr2e}
+\usepackage{enumitem}
 %\usepackage{parskip}
+%\usepackage[compact]{titlesec}         
+%\titlespacing{\section}{2pt}{2pt}{2pt} 
+%\AtBeginDocument{
+%  \setlength\abovedisplayskip{2pt}
+%  \setlength\belowdisplayskip{2pt}}
 
 % Definitions of handy macros can go here
 \newcommand{\dataset}{{\cal D}}
@@ -17,76 +23,83 @@
 % Heading arguments are {volume}{year}{pages}{submitted}{published}{author-full-names}
 
 % Short headings should be running head and authors last names
-\ShortHeadings{95-845: AAMLP Proposal}{Lastname and Lastname}
+\ShortHeadings{95-845: AAMLP Proposal}{Kainosho and Townsend}
 \firstpageno{1}
 
 \begin{document}
 
 \title{Heinz 95-845: Project Proposal}
+\author{Atsumi Kainosho\qquad Haley Townsend\\
+\em Carnegie Mellon University, Heinz College}
 
-\author{\name Atsumi Kainosho \email ANDREWID/akainosh@andrew.cmu.edu \\
-       \addr Heinz College of Information Systems and Public Policy\\
-       Carnegie Mellon University\\
-       Pittsburgh, PA, United States \\
-       \AND
-       \name Haley Townsend \email ANDREWID/htownsen@andrew.cmu.edu \\
-       \addr Heinz College of Information Systems and Public Policy\\
-       Carnegie Mellon University\\
-       Pittsburgh, PA, United States}
+%\author{\name Atsumi Kainosho \email akainosh@andrew.cmu.edu \\
+%       \AND
+%       \name Haley Townsend \email htownsen@andrew.cmu.edu \\
+%       \addr Heinz College of Information Systems and Public Policy\\
+%       Carnegie Mellon University\\
+%       Pittsburgh, PA, United States}
 \maketitle
 
+\section{Project Background, Importance and Users}
+Body Mass Index (BMI) is a common and informative metric used by the Centers for Disease Control and Prevention (CDC). This indicator is often used to flag individuals who could have an unhealthy level of fat. Being overweight can lead to many health consequences and/or exacerbate existing conditions, such as diabetes. Therefore, reducing the number of overweight and obese persons in the country constitutes a top priority for the CDC. Specifically, the CDC states: "CDC’s Obesity efforts focus on policy and environmental strategies to make healthy eating and active living accessible and affordable for everyone." 
 
-\section{Project Details}
-Your project will involve the use of the machine learning pipeline. This is an opportunity for you to explore some interest you have in an applied domain and the machine learning suitable for the task.
+The purpose of this project is to conduct a novel analysis using demographic data to classify BMI for the CDC. Specifically, this project is "novel" in its application of sophisticated machine learning algorithms to survey and observational policy data. Often, the most innovative machine learning research is conducted in the private sphere where companies are motivated to increase profits and funding is plentiful. Conversely, public sector agencies are often limited in technology, funding and the ability to perform complex data analyses. Therefore, we hope this project will provide important structure and insights to the CDC, the nation's health protection agency. 
 
-The purpose of the project is to conduct an analysis that is novel in some way. The novelty could be in terms of development of machine learning, the assessment of a wide variety of machine learning algorithms at a focused task, or the application of a single machine learning algorithm that impacts a real societal problem.
+For example, the CDC could use this classifier to better target at-risk youth with additional health assistance (e.g. more food stamps). This project aims to not only provide insights and recommendations from the results, but also showcase the entire machine learning pipeline for this specific context. While we will be performing this analysis on data from the CDC, we intend for this pipeline to serve other health and nutrition agencies as well. Officials in the health care field can detect potentially unhealthy children based only on their socio-demographic backgrounds, which will help inform health care policy efforts. 
 
-A list of exemplary papers are available in the Possible Data Sets slides on Canvas. The examples may be helpful in identifying how you conduct your study and prepare your write-up. Two additional resources for finding a problem domain include: (1) Data is Plural (\url{https://goo.gl/UgKgLC}) and, (2) the url: \url{https://github.com/awesomedata/awesome-public-datasets}. We recommend you do not choose a fully pre-processed data set. We do recommend you choose a data set that will fit in memory (or that can be run on your laptop) so that your machine learning process will be manageable.
-
-The proposal for the project is due on \textbf{March 27th}. Please use this TeX template in Section \ref{details} and submit on Canvas \textbf{a link to a git repository with instructions on access (particularly if it is a private repository)}. You may find the online editors ShareLatex or Overleaf helpful in drafting your TeX file. However, in order to learn git version control (which will help you checkpoint during your project), we require the submission to be in a git repository. The git repository should include at minimum the .tex, .bib, and .pdf file for your proposal.
-
-\subsection{Objectives}
-The objective of this project proposal is to generate a proposal for your course project. It should be concise and describe the following components:
-\begin{itemize}
-\item The premise of the analysis and a description of an analytic framework that motivates the use of machine learning for your task
-\item Presentation of machine learning techniques appropriate for the task
-\item Description of the data
-\item Description of possible limitations of the study
-\item Description of the likely analysis outcomes and their impact.
+\section{Objectives and Analysis}
+The main objective of this project is to execute the machine learning pipeline from start to finish within the context of U.S. health and nutrition. In our analysis, we will build a classifier that will predict a child's BMI category (healthy or overweight) based only on their demographic information. More specifically, this project aims to:
+\begin{itemize}[noitemsep,topsep=0pt]
+\item Work with SAS databases and .xpt files in R (which are common database/set types in the public sector)
+\item Clean, subset and manipulate the data for this use case
+\item Explore, summarize and visualize the data to get a sense of general trends
+\item Apply various machine learning techniques to classify a child's BMI
+\item Evaluate the performance of various machine learning algorithms
+\item Make policy recommendations to the CDC based on the results
+\item Suggest other possible use cases for the completed pipeline and insights
 \end{itemize}
 
-\subsection{Parameters}
-The project will be conducted in groups of 2-3.
+\section{Existing Work}
+There is plentiful research related to BMI and socio-demographic factors for children. For example, Lynch et al. observed adverse family experiences and obesity in children in the United States. Ohr-Vchaspa et al. argues that a child's weight status is closely related to food and physical activity. However, previous studies, including the two just mentioned, have only used basic statistical methods, such as linear regression or descriptive statistics. When focusing on studies using the NHANES dataset, this trend remains. For instance, Skinner et al. published "Prevalence of Obesity and Severe Obesity in US Children, 1999 to 2016" that reports the prevalence estimates of overweight and obesity (class I, class II, and class III) by 2-year NHANES cycles and compares cycles by using adjusted Wald tests and linear trends by using ordinary least squares regression. In other words, these studies simply try to determine contributing factors of obesity, but they do not establish a model to predict whether a child has a higher BMI based on their socio-demographic factors. They did not use machine learning techniques in any form. 
 
-The project you propose should be different from an existing analysis, including publicly available analyses and analyses from other class projects of yours. It is permissible to perform an analysis in data that warrants a secondary analysis. My guideline here is that the analysis must be greater than 50\% new. To get approval for these studies, please describe the existing project and highlight the difference and contribution of this class's project. Provide any relevant documents (proposals, manuscripts, and/or citations). If the project has overlap with work from another course, you must also provide documented approval from the other faculty member/research collaborator(s). 
-
-Your team is free to use programming language(s) of your choosing, however, we may only be able to support your endeavors in R.
-
-\section{Proposal Details (10 points)} \label{details}
-Please provide information for the following fields. Your proposal write-up should be no more than 2 pages.
-
-\subsection{What is your proposed analysis? What are the likely outcomes?}
-
-
-\subsection{Why is your proposed analysis important?}
-
-\subsection{How will your analysis contribute to existing work? Provide references, \emph{e.g.}, see: \cite{cite1}.}
-
-\subsection{Describe the data. Where applicable, please also define Y outcome(s), U treatment, V covariates, and W population.}
+\section{Data and Design}
+This project uses data from the 2012 National Health and Nutrition Examination Survey (NHANES) National Youth Fitness Survey (NNYFS). This one-time survey collected demographic, dietary, health and examination data on 1,576 children ages 3 to 15 years old across the United States. We define the following:
+\begin{itemize}[noitemsep,topsep=0pt]
+\item Y: binary, whether the child is categorized as overweight or not. Right now our outcome variable has four classes, but we will condense these into two.
+\item U: number of days in the week the child is physically active at least 60 minutes. Please note: this is not a true treatment or intervention. Since this data is observational and comes from a self-reported survey, we can (at best) make associative statements between U and Y. 
+\item V: major covariates include gender, age, race, country of birth, language, annual family income, household size, parent/guardian's marital status and a few others. 
+\item W: 3 to 15 year-olds in the United States considered part of the non-institutionalized, resident population. This survey is considered "nationally representative."
+\end{itemize}
+Since some of the demographic columns have missing data, we will have to decide whether to impute the missing values, based on the nature of the missingness. We hope to build associative statements between BMI category and physical activity. Additionally, we want to build an interpretable model that can help show the relationship between the covariates and the outcome. To get there, we will apply a logistic regression, decision tree, random forest and potentially a neural network. This project is of appropriate size for this course, since we must work with a new database structure (from SAS), deal with missing data, apply various classifiers, evaluate performance and make interpretable statements. Having 1,571 rows of data allows us to accomplish these things without crashing our computers (since the dataset is smaller).
 
 
-\subsection{What evaluation measures are appropriate for the analysis? Which measures will you use?}
+\section{Evaluation Measures, Likely Outcomes and Limitations}
+To evaluate the performance of the machine learning algorithms, we will overlay ROC curves and compare AUCs. We expect the logistic regression or random forest will perform best on the test data. The decision tree may be too simple while the neural network is bound to be too complex and uninterpretable. If performance is similar across the logistic regression and random forest, we will likely select the logistic regression for our recommendation since it is more interpretable. In addition to evaluating the models, we will determine which variables are most important. We can find the variable importance of the features as MeanDecreaseGini in random forest. This knowledge can contribute to previous studies, since it provides new insights on the relationship between BMI and other factors that previous studies have tried to reveal.
 
-
-\subsection{What study design, pre-processing, and machine learning methods do you intend to use? Justify that the analysis is of appropriate size for a course project.}
-
-\subsection{What are possible limitations of the study?}
-
-\subsection{Who will use your analytic pipeline? In one or two sentences, describe an example of its use.}
+The biggest possible limitation of this study is the small number of samples in the data set. The total number of samples without missing data is 1,571. With Ensemble methods, we will try to train an algorithm, but it can cause overfitting on this small amount of training data. We should check the appropriate balance between variance and bias using regularization. Also, we cannot argue about causalities of high BMI based on only our data set since it is not feasible to randomize samples. Since our objective to build a classifier for BMI, we do not need to consider causalities, but if we can do it, it would be more helpful for the government to tackle obesity problems.
 
 \bibliography{sample.bib}
 %\appendix
 %\section*{Appendix A.}
 %Some more details about those methods, so we can actually reproduce them.
+No author listed. Healthy Weight: Body Mass Index (BMI). Centers for Disease Control and Prevention, U.S. Department of Health and Human Services.
+ {\noindent \em See https://www.cdc.gov/healthyweight/
+ assessing/bmi/index.html for full source.}
+
+Asheley Cockrell Skinner, Sophie N. Ravanbakht, Joseph A. Skelton, Eliana M. Perrin, Sarah C. Armstrong. Prevalence of Obesity and Severe Obesity in US Children, 1999–2016. (2018).
+{\noindent \em See https://pediatrics.aappublications.org/content/141/3/e20173459.abstract}
+
+Brian A. Lynch, Amenah Agunwamba, Patrick M. Wilson, Seema Kumar, Robert M. Jacobson, Sean Phelan, Valeria Cristiani, Chun Fan, Lila J. Finney Rutten. Adverse family experiences and obesity in children and adolescents in
+the United States. (2013).
+{\noindent \em See https://www.ncbi.nlm.nih.gov/pubmed/23726897}
+
+Punam Ohri-Vachaspati, Kristen Lloyd, Derek DeLia, David Tulloch, Michael J. Yedidia. A closer examination of the relationship between children's weight status and the food and physical activity environment. (2013).
+{\noindent \em See https://www.ncbi.nlm.nih.gov/pubmed/23726897}
+
+Additional information used:
+
+{\noindent \em https://www.cdc.gov/obesity/index.html}
+
+{\noindent \em https://www.cdc.gov/nchs/nnyfs/data_faq.htm}
 
 \end{document}
