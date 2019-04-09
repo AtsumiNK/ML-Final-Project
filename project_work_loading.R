@@ -125,6 +125,10 @@ df$education_level_ref <- ordered(df$education_level_ref,
                                             "Some College or Associates", "College Graduate or Above",
                                             "Don't Know"))
 
+# annual_family_income_imputed, 77 is Refused and 99 is Don't Know
+df$annual_family_income = na_if(df$annual_family_income, 99)
+df$annual_family_income = na_if(df$annual_family_income, 77)
+sum(is.na(df$annual_family_income))
 
 ##########################################################################################################
 # DATA EXPLORATION
@@ -137,14 +141,48 @@ df %>% select(gender, age, race, language, birth_country) %>% split(df$Y) %>% ma
 
 
 ##########################################################################################################
+# IMPUTING MISSING VALUES FOR marital_status_ref and eductation_level_ref
+colSums(is.na(df))
+### As a function you could call: does it all!
+# Step 3, perform multiple (single) imputation for missing X's
+# I will perform imputation on ALL the data and then split back into train and test
+library(mice)  
+mdat = mice(df %>% 
+              select(-Y) %>% 
+              mutate_if(is.character, as.factor),m=1,maxit = 1) 
+
+complete_and_indicate = function(mdat, labeldf, iter=1, indicators=T) {
+  idat = complete(mdat, iter) %>% as_tibble()
+  names(idat) = lapply(names(idat), paste0, "_imputed")
+  if(!indicators) {
+    imputedata = labeldf %>% 
+      bind_cols(idat) %>% 
+      as_tibble()
+  } else {
+    imputedata = labeldf %>% 
+      bind_cols(idat, 
+                mdat$where %>% as_tibble() %>% rename_all(
+                  ~ paste0(., "_missing"))
+      ) %>%
+      as_tibble()
+  }
+  return(imputedata)
+}
+
+all_imputed = complete_and_indicate(mdat, df %>% select(Y))  # e.g.
+
+# Step 4, use knowledge about the data distribution in train to impute X values in test
+sum(is.na(all_imputed)) # Yay, no more NAs!
+
+#################################################################################################################
 # RUNNING MODELS 
 # Step 1, split into train and test data
 # Split back into train and test
 set.seed(518)
-shuffled_df = df[sample(1:nrow(df)),]
+shuffled_df = all_imputed[sample(1:nrow(all_imputed)),]
 n = round((0.75 * nrow(shuffled_df)),0)
-train = df[1:n,]
-test = df[-(1:n),]
+train = all_imputed[1:n,]
+test = all_imputed[-(1:n),]
 
 
 # Confirm that train and test are balanced with the outcome of interest (Y)
@@ -158,6 +196,104 @@ lr = with(train, glm(Y=="Y" ~ .,
          data = train))
 lr %>% summary()
 
+# Show a decision tree
+library(rpart); library(rpart.plot)
+tree = rpart(train, formula = Y=='Y' ~ .)
+rpart.plot(tree, branch.type=5)
 
+
+# Random Forest
+# Make the response variable a factor again so R knows to do binary classification for RF
+# consider ntrees for cross validation
+library(randomForest)
+train$Y <- as.factor(train$Y)
+forest = randomForest(formula = Y ~ .,
+                      data=train, ntrees=10)
+
+# Boosting
+# Example adaboost
+library(ada)
+aforest = ada(formula = Y=="Y" ~ .,
+              data=train,
+              iter=10)
+
+
+# Gradient Boosting
+# Example gradient boosted forest
+library(gbm)
+gforest = gbm(formula = Y=="Y" ~ .,
+              data=train %>%
+                mutate_if(is.logical, as.factor),
+              interaction.depth=10,
+              cv.folds = 2)
+
+#########################################################################################################################
+library(ROCR)
+
+# Logistic Regression
+logit_prediction = predict(lr,test)
+logit_rocdata = prediction(predictions=logit_prediction,
+                           labels=test$Y) %>%
+  performance("tpr", "fpr") %>%
+  (function(.) data.frame(FPR=.@x.values[[1]], TPR=.@y.values[[1]]) %>% as_tibble())(.) 
+
+auc_lg =  prediction(predictions=logit_prediction,
+                     labels=test$Y) %>% performance("auc")
+auc_lg = round(auc_lg@y.values[[1]],3)
+
+# Decision Tree
+dt_prediction = predict(tree,test)
+dt_rocdata = prediction(predictions=dt_prediction,
+                           labels=test$Y) %>%
+  performance("tpr", "fpr") %>%
+  (function(.) data.frame(FPR=.@x.values[[1]], TPR=.@y.values[[1]]) %>% as_tibble())(.) 
+
+auc_dt =  prediction(predictions=dt_prediction,
+                     labels=test$Y) %>% performance("auc")
+auc_dt = round(auc_dt@y.values[[1]],3)
+
+# Random Forest
+test$Y <- as.factor(test$Y)
+rf_prediction = predict(forest, test, type = "prob")
+rf_rocdata = prediction(predictions=rf_prediction[,2],
+                        labels=test$Y) %>%
+  performance("tpr", "fpr") %>%
+  (function(.) data.frame(FPR=.@x.values[[1]], TPR=.@y.values[[1]]) %>% as_tibble())(.) 
+
+auc_rf =   prediction(predictions=rf_prediction[,2],
+                      labels=test$Y) %>% performance("auc")
+auc_rf = round(auc_rf@y.values[[1]],3)
+
+#boosting
+boosting_prediction = predict(aforest, test, type = "prob")
+boosting_rocdata = prediction(predictions=boosting_prediction[,2],
+                              labels=test$Y) %>%
+  performance("tpr", "fpr") %>%
+  (function(.) data.frame(FPR=.@x.values[[1]], TPR=.@y.values[[1]]) %>% as_tibble())(.) 
+
+auc_boosting = prediction(predictions=boosting_prediction[,2],
+                          labels=test$Y) %>% performance("auc")
+auc_boosting = round(auc_boosting@y.values[[1]],3)
+
+#gradient boosting
+gradient_prediction = predict(gforest, test,
+                              n.trees=gforest$n.trees,type = "response")
+gradient_rocdata = prediction(predictions=gradient_prediction,
+                              labels=test$Y) %>%
+  performance("tpr", "fpr") %>%
+  (function(.) data.frame(FPR=.@x.values[[1]], TPR=.@y.values[[1]]) %>% as_tibble())(.) 
+
+auc_gradient = prediction(predictions=gradient_prediction,
+                          labels=test$Y) %>% performance("auc")
+auc_gradient = round(auc_gradient@y.values[[1]],3)
+
+
+# plot ROC curve
+ggplot(data = logit_rocdata, aes(x=FPR,y=TPR, col = paste0("Logistic Regression: AUC", auc_lg))) + geom_line() +
+  geom_line(data = dt_rocdata, aes(x=FPR,y=TPR, col = paste0("DT: AUC", auc_dt))) + 
+  geom_line(data = rf_rocdata, aes(x=FPR,y=TPR, col = paste0("RF: AUC", auc_rf))) +
+  geom_line(data = boosting_rocdata, aes(x=FPR,y=TPR, col = paste0("Boosting: AUC", auc_boosting))) +
+  geom_line(data = gradient_rocdata, aes(x=FPR,y=TPR, col = paste0("Gradient boosting: AUC", auc_gradient))) + 
+    theme(legend.title=element_blank())
 
 
