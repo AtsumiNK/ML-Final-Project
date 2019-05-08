@@ -42,7 +42,7 @@ library(gbm)
 # Please change the directry to yours before running
 demo = read_xpt("C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\Y_DEMO.xpt")
 write.csv(demo, file = 'attempt.csv')
-demodf = read_csv("C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\attempt.csv")
+demodf = read_csv("attempt.csv")
 
 # Body Measures (Y_BMX) data that includes BMI information
 body = read_xpt('C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\Y_BMX.xpt')
