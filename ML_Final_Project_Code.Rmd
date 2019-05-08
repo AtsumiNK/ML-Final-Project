@@ -39,8 +39,9 @@ library(gbm)
 # Since the data format was SAS, we extracted data into CSV file first, and then read the file to use them in R.
 
 # NHANES NNYFS  Demographic Variables & Sample Weights (Y_DEMO) data
+# Please change the directry to yours before running
 demo = read_xpt("C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\Y_DEMO.xpt")
-write.csv(demo, file = 'C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\attempt.csv')
+write.csv(demo, file = 'attempt.csv')
 demodf = read_csv("C:\\Users\\atsum\\Documents\\GitHub\\ML-Final-Project\\attempt.csv")
 
 # Body Measures (Y_BMX) data that includes BMI information
